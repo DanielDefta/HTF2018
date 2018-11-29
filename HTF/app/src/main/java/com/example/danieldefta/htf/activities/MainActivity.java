@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         TextView credentialsView = (TextView) findViewById(R.id.credentials);
         Button logoutButton = (Button) findViewById(R.id.logout);
         logoutButton.setOnClickListener(new View.OnClickListener() {
@@ -43,8 +44,14 @@ public class MainActivity extends AppCompatActivity {
 
         //Obtain the token from the Intent's extras
         String accessToken = getIntent().getStringExtra(LoginActivity.EXTRA_ACCESS_TOKEN);
+        if(accessToken == null || accessToken.equals("")){
+            logout();
+        }
+        else {
+            this.accessToken = accessToken;
+            supplies();
+        }
         credentialsView.setText(accessToken);
-        this.accessToken = accessToken;
 
     }
 

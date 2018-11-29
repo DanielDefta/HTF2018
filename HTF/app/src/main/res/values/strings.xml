@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">HTF</string>
+
+    <string name="refresh">Refresh the access_token</string>
+    <string name="login">Log in</string>
+    <string name="logout">Logout</string>
+    <string name="request_credentials_title">Authenticate to continue</string>
+
+    <string name="com_auth0_client_id">km5vlAJ8kgQAtbucvAyzUgkakxRj5ajv</string>
+    <string name="com_auth0_domain">hackthefuturemobile.eu.auth0.com</string>
+</resources>

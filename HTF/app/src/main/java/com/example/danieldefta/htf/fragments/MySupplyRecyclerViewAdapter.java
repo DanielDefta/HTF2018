@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.example.danieldefta.htf.R;
 import com.example.danieldefta.htf.fragments.SuppliesFragment.OnListFragmentInteractionListener;
-import com.example.danieldefta.htf.fragments.dummy.DummyContent.DummyItem;
 import com.example.danieldefta.htf.models.Supply;
 
 import java.util.List;

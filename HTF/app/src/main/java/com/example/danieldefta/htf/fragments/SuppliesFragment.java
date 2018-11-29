@@ -11,12 +11,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.danieldefta.htf.R;
-import com.example.danieldefta.htf.fragments.dummy.DummyContent;
-import com.example.danieldefta.htf.fragments.dummy.DummyContent.DummyItem;
+import com.example.danieldefta.htf.activities.LoginActivity;
 import com.example.danieldefta.htf.models.Supply;
 
+import com.auth0.android.Auth0;
+import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.provider.AuthCallback;
+import com.auth0.android.provider.WebAuthProvider;
+import com.auth0.android.result.Credentials;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,8 +45,11 @@ public class SuppliesFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
+    private static final String ARG_ACCESS_TOKEN = "accessToken";
+    private static final String API_URL = "https://htf2018.now.sh/";
     // TODO: Customize parameters
     private int mColumnCount = 1;
+    private String accessToken;
     private OnListFragmentInteractionListener mListener;
 
     /**
@@ -42,10 +61,11 @@ public class SuppliesFragment extends Fragment {
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static SuppliesFragment newInstance(int columnCount) {
+    public static SuppliesFragment newInstance(int columnCount, String accessToken) {
         SuppliesFragment fragment = new SuppliesFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putString(ARG_ACCESS_TOKEN, accessToken);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,6 +76,7 @@ public class SuppliesFragment extends Fragment {
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            accessToken = getArguments().getString(ARG_ACCESS_TOKEN);
         }
     }
 
@@ -73,7 +94,7 @@ public class SuppliesFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MySupplyRecyclerViewAdapter( ##########################, mListener));
+            recyclerView.setAdapter(new MySupplyRecyclerViewAdapter( getAllSupplies(), mListener));
         }
         return view;
     }
@@ -109,5 +130,54 @@ public class SuppliesFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(Supply item);
+    }
+
+
+    private List<Supply> getAllSupplies() {
+        final Request.Builder reqBuilder = new Request.Builder()
+                .get()
+                .url(API_URL + "supplies");
+            if (accessToken == null) {
+                Toast.makeText(getContext(), "Token not found. Log in first.", Toast.LENGTH_SHORT).show();
+            }
+            reqBuilder.addHeader("Authorization", "Bearer " + accessToken);
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = reqBuilder.build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext(), "An error occurred", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(final Response response) throws IOException {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(getContext(), "API call success!", Toast.LENGTH_SHORT).show();
+                            String jsonData = null;
+                            try {
+                                jsonData = response.body().string();
+                                System.out.print("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+                                System.out.print(jsonData);
+                                JSONArray Jobject = new JSONArray(jsonData);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            Toast.makeText(getContext(), "API call failed.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+        return new ArrayList<>();
     }
 }

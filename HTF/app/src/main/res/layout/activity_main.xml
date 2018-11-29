@@ -35,4 +35,14 @@
         android:padding="@dimen/activity_general_margin"
         android:text="@string/logout"/>
 
+    <Button
+        android:id="@+id/supplies"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/activity_general_margin"
+        android:background="@android:color/white"
+        android:padding="@dimen/activity_general_margin"
+        android:text="Supplies" />
+
 </LinearLayout>

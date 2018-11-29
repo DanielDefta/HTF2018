@@ -14,14 +14,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.danieldefta.htf.R;
-import com.example.danieldefta.htf.activities.LoginActivity;
 import com.example.danieldefta.htf.models.Supply;
 
-import com.auth0.android.Auth0;
-import com.auth0.android.authentication.AuthenticationException;
-import com.auth0.android.provider.AuthCallback;
-import com.auth0.android.provider.WebAuthProvider;
-import com.auth0.android.result.Credentials;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -51,6 +45,8 @@ public class SuppliesFragment extends Fragment {
     private int mColumnCount = 1;
     private String accessToken;
     private OnListFragmentInteractionListener mListener;
+
+    private MySupplyRecyclerViewAdapter adapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -94,8 +90,10 @@ public class SuppliesFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MySupplyRecyclerViewAdapter( getAllSupplies(), mListener));
+            adapter = new MySupplyRecyclerViewAdapter(new ArrayList<Supply>(), mListener);
+            recyclerView.setAdapter(adapter);
         }
+        getAllSupplies();
         return view;
     }
 
@@ -133,7 +131,7 @@ public class SuppliesFragment extends Fragment {
     }
 
 
-    private List<Supply> getAllSupplies() {
+    private void getAllSupplies() {
         final Request.Builder reqBuilder = new Request.Builder()
                 .get()
                 .url(API_URL + "supplies");
@@ -165,10 +163,25 @@ public class SuppliesFragment extends Fragment {
                             String jsonData = null;
                             try {
                                 jsonData = response.body().string();
-                                System.out.print("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-                                System.out.print(jsonData);
-                                JSONArray Jobject = new JSONArray(jsonData);
+                                JSONArray Jarray = new JSONArray(jsonData);
+
+                                for (int i = 0 ; i < Jarray.length(); i++) {
+
+                                    JSONObject obj = Jarray.getJSONObject(i);
+                                    Supply s = new Supply();
+
+                                    s.setAuthor(obj.getString("author"));
+                                    s.setLat(obj.getInt("lat"));
+                                    s.setLng(obj.getInt("lng"));
+                                    s.setImage(obj.getString("image"));
+                                    adapter.addItem(s);
+                                }
+
+
+
                             } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         } else {
@@ -178,6 +191,5 @@ public class SuppliesFragment extends Fragment {
                 });
             }
         });
-        return new ArrayList<>();
     }
 }

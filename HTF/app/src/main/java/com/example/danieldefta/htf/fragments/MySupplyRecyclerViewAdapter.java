@@ -42,8 +42,8 @@ public class MySupplyRecyclerViewAdapter extends RecyclerView.Adapter<MySupplyRe
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.lat.setText(mValues.get(position).getLat());
-        holder.lng.setText(mValues.get(position).getLng());
+        holder.lat.setText(String.valueOf(mValues.get(position).getLat()));
+        holder.lng.setText(String.valueOf(mValues.get(position).getLng()));
 
         byte[] decodedString = Base64.decode(mValues.get(position).getImage(), Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0,decodedString.length);
@@ -59,6 +59,11 @@ public class MySupplyRecyclerViewAdapter extends RecyclerView.Adapter<MySupplyRe
                 }
             }
         });
+    }
+
+    public void addItem(Supply supply){
+        mValues.add(supply);
+        notifyItemInserted(mValues.size()-1);
     }
 
     @Override

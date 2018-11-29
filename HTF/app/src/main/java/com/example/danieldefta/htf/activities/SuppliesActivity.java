@@ -3,6 +3,7 @@ package com.example.danieldefta.htf.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.widget.Button;
 
 import com.example.danieldefta.htf.R;
 import com.example.danieldefta.htf.fragments.SuppliesFragment;
@@ -22,6 +23,7 @@ public class SuppliesActivity extends AppCompatActivity implements SuppliesFragm
                     .replace(R.id.container, SuppliesFragment.newInstance(1, accessToken))
                     .commitNow();
         }
+
     }
 
     @Override

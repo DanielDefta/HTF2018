@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.LoginActivity" />
-        <activity android:name=".activities.SuppliesActivity"></activity>
+        <activity android:name=".activities.SuppliesActivity" />
+        <activity android:name=".activities.AddSupply" android:theme="@style/AppTheme.CustomTheme"></activity>
     </application>
 
 </manifest>
